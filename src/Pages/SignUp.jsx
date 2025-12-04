@@ -1,7 +1,18 @@
+import { useRef, useState } from "react";
 import Button from "../components/UI/Button";
 import Input from "../components/UI/Input";
 
 const SignUp = () => {
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const RePasswordRef = useRef(null);
+  const nameRef = useRef(null);
+  function handleSubmit() {
+    if (emailRef.current && passwordRef.current) {
+      alert(emailRef.current.getValue());
+      alert(passwordRef.current.getValue());
+    }
+  }
   return (
     <>
       <div className="w-screen h-screen flex justify-center items-center bg-gray-100">
@@ -10,20 +21,24 @@ const SignUp = () => {
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
             placeHolder={"Enter your Name"}
+            ref={nameRef}
           />
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
             placeHolder={"Enter your email"}
+            ref={emailRef}
           />
 
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
             placeHolder={"Enter your password"}
+            ref={passwordRef}
           />
 
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
             placeHolder={"Re Enter password"}
+            ref={RePasswordRef}
           />
 
           <Button
@@ -31,6 +46,7 @@ const SignUp = () => {
               " bg-blue-500 py-2 rounded decoration-0 text-white font-bold mt-5"
             }
             text={"SignUp"}
+            handleClick={handleSubmit}
           />
           <p className="mt-3 text-center">
             Already have an account?

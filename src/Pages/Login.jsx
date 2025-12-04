@@ -8,8 +8,8 @@ const Login = () => {
 
   function handleSubmit() {
     if (emailRef.current && passwordRef.current) {
-      alert(emailRef.current.value);
-      alert(passwordRef.current.value);
+      alert(emailRef.current.getValue());
+      alert(passwordRef.current.getValue());
     }
   }
 
@@ -20,11 +20,13 @@ const Login = () => {
           <h1 className="my-5 font-bold text-3xl text-center"> Login </h1>
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
-            placeHolder={"Enter your username"}
+            placeHolder={"Enter your email"}
+            ref={emailRef}
           />
           <Input
             className={" rounded my-3 py-2 bg-gray-50 px-2 decoration-0"}
             placeHolder={"Enter your password"}
+            ref={passwordRef}
           />
 
           <Button
@@ -32,6 +34,7 @@ const Login = () => {
               " bg-blue-500 py-2 rounded decoration-0 text-white font-bold mt-5"
             }
             text={"login"}
+            handleClick={handleSubmit}
           />
 
           <p className="mt-3 text-center">

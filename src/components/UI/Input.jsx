@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useImperativeHandle, useRef, useState } from "react";
 
-const Input = ({ text, className, placeHolder }) => {
-  const [inputValue, setInputValue] = useState("");
+const Input = ({ text, className, placeHolder, ref }) => {
+  const inputRef = useRef(null);
+
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        getValue: () => {
+          return inputRef.current.value;
+        },
+      };
+    },
+    []
+  );
+
   return (
     <>
       <input
         type="text"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
         className={className}
         placeholder={placeHolder}
+        ref={inputRef}
       />
     </>
   );
