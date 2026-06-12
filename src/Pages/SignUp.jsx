@@ -1,16 +1,93 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../components/UI/Button";
 import Input from "../components/UI/Input";
+import { userSignup } from "../redux/features/auth/authService";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
 
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email.trim()))
+    return "Please enter a valid email address";
+  return "";
+}
+
+function validatePassword(password) {
+  if (password.length < 6) {
+    return "Password must be at least 6 characters long";
+  }
+
+  const hasUpperCase = /[A-Z]/.test(password);
+  if (!hasUpperCase) {
+    return "Password must contain at least one uppercase letter";
+  }
+
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  if (!hasSpecialChar) {
+    return "Password must contain at least one special character";
+  }
+  return "";
+}
 const SignUp = () => {
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
   const RePasswordRef = useRef(null);
   const nameRef = useRef(null);
-  function handleSubmit() {
-    if (emailRef.current && passwordRef.current) {
-      alert(emailRef.current.getValue());
-      alert(passwordRef.current.getValue());
+  const navigate = useNavigate();
+  const state = useSelector((state) => state.auth);
+  function handleClickToLogin() {
+    navigate("/login");
+  }
+
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state?.error);
+      dispatch(resetError());
+    }
+  }, [state.error]);
+
+  useEffect(() => {
+    if (state?.user) {
+      navigate("/");
+    }
+  }, [state?.user]);
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const email = emailRef.current?.getValue() || "";
+    const name = nameRef.current?.getValue() || "";
+    const password = passwordRef.current?.getValue() || "";
+    const rePassword = RePasswordRef.current?.getValue() || "";
+
+    if (email && name && password && rePassword) {
+      const emailError = validateEmail(email);
+      const passwordError = validatePassword(password);
+      if (emailError) {
+        toast.error(emailError);
+      }
+
+      if (passwordError) {
+        toast.error(passwordError);
+        return;
+      }
+
+      if (password != rePassword) {
+        toast.error("password didn't match");
+        return;
+      }
+
+      const user = { email, name, password };
+
+      try {
+        const ee = await userSignup(user);
+        toast.success("sign in successfull");
+        navigate("/login");
+      } catch (error) {
+        toast.error(error?.data?.message);
+      }
+    } else {
+      toast.error("please enter valid values");
     }
   }
   return (
@@ -54,7 +131,7 @@ const SignUp = () => {
               href=""
               className="ml-3 text-end hover:cursor-pointer text-blue-700"
             >
-              Login
+              <button onClick={handleClickToLogin}>Login</button>
             </a>
           </p>
         </div>
